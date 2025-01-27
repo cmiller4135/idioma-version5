@@ -122,18 +122,18 @@ const Navbar = () => {
         {isOpen && (
           <div className="md:hidden py-4">
             <Link to="/tools" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Learning Tools</Link>
-            <Link to="/tools/sub1" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Sub Tool 1</Link>
-            <Link to="/tools/sub2" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Sub Tool 2</Link>
-            <Link to="/tools/sub3" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Sub Tool 3</Link>
+            <Link to="/tools/sub1" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Spanish Conjugations</Link>
+            <Link to="/tools/sub2" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Spanish Vocabulary</Link>
+            <Link to="/tools/sub3" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Study a topic or industry</Link>
             
             <Link to="/teach" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>For Teachers</Link>
-            <Link to="/teach/sub1" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Teacher Tool 1</Link>
-            <Link to="/teach/sub2" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Teacher Tool 2</Link>
+            <Link to="/teach/sub1" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Photo Translation</Link>
+            <Link to="/teach/sub2" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Video Learning</Link>
             
-            <Link to="/saas1" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>SaaS Tool 1</Link>
-            <Link to="/saas2" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>AI Content Worksheets</Link>
-            <Link to="/twilio" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio</Link>
-            <Link to="/twilioOptIn" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio Messaging Opt-In</Link>
+            <Link to="/saas1" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Study Grammar with AI</Link>
+            <Link to="/saas2" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Study a Language with AI</Link>
+            {/* <Link to="/twilio" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio</Link>
+            <Link to="/twilioOptIn" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio Messaging Opt-In</Link> */}
             <Link to="/profile/config" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Profile and Configuration</Link>
             <button onClick={() => { handleLogout(); handleSubMenuClick(); }} className="w-full text-left py-2 text-custom-yellow">
               Logout
