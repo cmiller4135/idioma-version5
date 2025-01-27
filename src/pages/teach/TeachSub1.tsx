@@ -13,7 +13,7 @@ interface Message {
 type TranslationType = 
   | 'Translate from English to Spanish'
   | 'Translate from Spanish to English'
-  | 'Translate from English to Telugu'
+  | 'Translate from English to Japanese'
   | 'Translate from English to French';
 
 function TeachSub1() {
@@ -86,8 +86,8 @@ function TeachSub1() {
         return "1. Translate this text to Spanish. 2. Also provide the original English text. Format your response exactly like this: SPANISH: [Spanish translation] ENGLISH: [Original English text]";
       case 'Translate from Spanish to English':
         return "1. Translate this text to English. 2. Also provide the original Spanish text. Format your response exactly like this: ENGLISH: [English translation] SPANISH: [Original Spanish text]";
-      case 'Translate from English to Telugu':
-        return "1. Translate this text to Telugu. 2. Also provide the original English text. Format your response exactly like this: TELUGU: [Telugu translation] ENGLISH: [Original English text]";
+      case 'Translate from English to Japanese':
+        return "1. Translate this text to Japanese. 2. Also provide the original English text. Format your response exactly like this: JAPANESE: [Japanese translation] ENGLISH: [Original English text]";
       case 'Translate from English to French':
         return "1. Translate this text to French. 2. Also provide the original English text. Format your response exactly like this: FRENCH: [French translation] ENGLISH: [Original English text]";
       default:
@@ -375,7 +375,7 @@ function TeachSub1() {
                     >
                       <option>Translate from English to Spanish</option>
                       <option>Translate from Spanish to English</option>
-                      <option>Translate from English to Telugu</option>
+                      <option>Translate from English to Japanese</option>
                       <option>Translate from English to French</option>
                     </select>
                   </div>
