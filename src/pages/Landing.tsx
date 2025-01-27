@@ -8,27 +8,34 @@ const Landing = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isLogin, setIsLogin] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     try {
+      let authResponse;
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        authResponse = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (error) throw error;
       } else {
-        const { error } = await supabase.auth.signUp({
+        authResponse = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              username: email.split('@')[0], // Store username in auth metadata
+            },
+          },
         });
-        if (error) throw error;
       }
+      if (authResponse.error) throw authResponse.error;
       navigate('/home');
     } catch (error) {
       console.error('Error:', error);
-      alert(error.message);
+      setError(error.message);
     }
   };
 
@@ -40,7 +47,7 @@ const Landing = () => {
       if (error) throw error;
     } catch (error) {
       console.error('Error:', error);
-      alert(error.message);
+      setError(error.message);
     }
   };
 
@@ -49,7 +56,7 @@ const Landing = () => {
       <div className="flex-1 container-custom py-12">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div className="text-center md:text-left bg-gradient-to-r from-[#264653] to-[#E63946] p-8 rounded-lg text-white">
-            <h1 className="text-4xl font-bold mb-6">Welcome to idioma-ai</h1>
+            <h1 className="text-4xl font-bold mb-6">Welcome to Idioma-AI</h1>
             <p className="text-lg mb-6">
               Transform your language learning journey with AI-powered tools and personalized lessons.
             </p>
@@ -68,6 +75,12 @@ const Landing = () => {
             <h2 className="text-2xl font-bold mb-6 text-center text-[#264653]">
               {isLogin ? 'Welcome Back!' : 'Create Your Account'}
             </h2>
+
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600">{error}</p>
+              </div>
+            )}
 
             <form onSubmit={handleAuth} className="space-y-4">
               <div>

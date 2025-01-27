@@ -20,75 +20,87 @@ const Navbar = () => {
     }
   };
 
+  const toggleToolsMenu = () => {
+    setToolsOpen(!toolsOpen);
+    setTeachersOpen(false);
+    setProfileOpen(false);
+  };
+
+  const toggleTeachersMenu = () => {
+    setTeachersOpen(!teachersOpen);
+    setToolsOpen(false);
+    setProfileOpen(false);
+  };
+
+  const toggleProfileMenu = () => {
+    setProfileOpen(!profileOpen);
+    setToolsOpen(false);
+    setTeachersOpen(false);
+  };
+
+  const handleSubMenuClick = () => {
+    setToolsOpen(false);
+    setTeachersOpen(false);
+    setProfileOpen(false);
+    setIsOpen(false); // Close mobile menu
+  };
+
   return (
-    <nav className="bg-gray-50 shadow-md">
-      <div className="container-custom">
+    <nav className="bg-custom-blue shadow-lg">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Left: Logo */}
-          <Link to="/home" className="text-xl font-bold nav-link">
-            idioma-ai
+          <Link to="/home" className="text-2xl font-bold text-custom-yellow">
+            Idioma-AI
           </Link>
 
           {/* Middle: Main Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <div 
-              className="relative group"
-              onMouseEnter={() => setToolsOpen(true)}
-              onMouseLeave={() => setToolsOpen(false)}
-            >
-              <Link to="/tools" className="nav-link flex items-center">
-                Tools <ChevronDown className="ml-1 h-4 w-4" />
-              </Link>
+            <div className="relative">
+              <button onClick={toggleToolsMenu} className="text-custom-yellow flex items-center">
+                Tools <ChevronDown className="ml-1 h-4 w-4 text-custom-yellow" />
+              </button>
               {toolsOpen && (
-                <div className="dropdown">
-                  <Link to="/tools/sub1" className="block px-4 py-2 nav-link hover:bg-gray-50">Spanish Conjugations</Link>
-                  <Link to="/tools/sub2" className="block px-4 py-2 nav-link hover:bg-gray-50">Spanish Vocabulary</Link>
-                  <Link to="/tools/sub3" className="block px-4 py-2 nav-link hover:bg-gray-50">Sub Tool 3</Link>
+                <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg">
+                  <Link to="/tools/sub1" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Spanish Conjugations</Link>
+                  <Link to="/tools/sub2" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Spanish Vocabulary</Link>
+                  <Link to="/tools/sub3" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Study a topic or industry</Link>
                 </div>
               )}
             </div>
 
-            <div 
-              className="relative group"
-              onMouseEnter={() => setTeachersOpen(true)}
-              onMouseLeave={() => setTeachersOpen(false)}
-            >
-              <Link to="/teach" className="nav-link flex items-center">
-                For Teachers <ChevronDown className="ml-1 h-4 w-4" />
-              </Link>
+            <div className="relative">
+              <button onClick={toggleTeachersMenu} className="text-custom-yellow flex items-center">
+                Multimedia Language Learning <ChevronDown className="ml-1 h-4 w-4 text-custom-yellow" />
+              </button>
               {teachersOpen && (
-                <div className="dropdown">
-                  <Link to="/teach/sub1" className="block px-4 py-2 nav-link hover:bg-gray-50">Teacher Tool 1</Link>
-                  <Link to="/teach/sub2" className="block px-4 py-2 nav-link hover:bg-gray-50">Teacher Tool 2</Link>
+                <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg">
+                  <Link to="/teach/sub1" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Photo Translation</Link>
+                  <Link to="/teach/sub2" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Video Learning</Link>
                 </div>
               )}
             </div>
 
-            <Link to="/saas1" className="nav-link">SaaS Tool 1</Link>
-            <Link to="/saas2" className="nav-link">AI Content Worksheets</Link>
-            <Link to="/twilio" className="nav-link">Twilio</Link>
-            <Link to="/twilioOptIn" className="nav-link">Twilio Messaging Opt-In</Link>
-          
+            <Link to="/saas1" className="text-custom-yellow">Study Grammar with AI</Link>
+            <Link to="/saas2" className="text-custom-yellow">Study a Language with AI</Link>
+            {/* <Link to="/twilio" className="text-custom-yellow">Twilio</Link>
+            <Link to="/twilioOptIn" className="text-custom-yellow">Twilio Messaging Opt-In</Link> */}
           </div>
 
           {/* Right: Profile */}
           <div className="hidden md:block">
-            <div 
-              className="relative group"
-              onMouseEnter={() => setProfileOpen(true)}
-              onMouseLeave={() => setProfileOpen(false)}
-            >
-              <button className="nav-link flex items-center">
-                Profile <ChevronDown className="ml-1 h-4 w-4" />
+            <div className="relative">
+              <button onClick={toggleProfileMenu} className="text-custom-yellow flex items-center">
+                Profile <ChevronDown className="ml-1 h-4 w-4 text-custom-yellow" />
               </button>
               {profileOpen && (
-                <div className="dropdown">
-                  <Link to="/profile/config" className="block px-4 py-2 nav-link hover:bg-gray-50">
+                <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg">
+                  <Link to="/profile/config" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>
                     Profile and Configuration
                   </Link>
                   <button 
-                    onClick={handleLogout} 
-                    className="w-full text-left px-4 py-2 nav-link hover:bg-gray-50"
+                    onClick={() => { handleLogout(); handleSubMenuClick(); }} 
+                    className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
                   >
                     Logout
                   </button>
@@ -99,7 +111,7 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden"
+            className="md:hidden text-custom-yellow"
             onClick={() => setIsOpen(!isOpen)}
           >
             <Menu className="h-6 w-6" />
@@ -109,28 +121,28 @@ const Navbar = () => {
         {/* Mobile menu */}
         {isOpen && (
           <div className="md:hidden py-4">
-            <Link to="/tools" className="block py-2 nav-link">Tools</Link>
-            <Link to="/tools/sub1" className="block py-2 pl-4 nav-link">Sub Tool 1</Link>
-            <Link to="/tools/sub2" className="block py-2 pl-4 nav-link">Sub Tool 2</Link>
-            <Link to="/tools/sub3" className="block py-2 pl-4 nav-link">Sub Tool 3</Link>
+            <Link to="/tools" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Learning Tools</Link>
+            <Link to="/tools/sub1" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Sub Tool 1</Link>
+            <Link to="/tools/sub2" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Sub Tool 2</Link>
+            <Link to="/tools/sub3" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Sub Tool 3</Link>
             
-            <Link to="/teach" className="block py-2 nav-link">For Teachers</Link>
-            <Link to="/teach/sub1" className="block py-2 pl-4 nav-link">Teacher Tool 1</Link>
-            <Link to="/teach/sub2" className="block py-2 pl-4 nav-link">Teacher Tool 2</Link>
+            <Link to="/teach" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>For Teachers</Link>
+            <Link to="/teach/sub1" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Teacher Tool 1</Link>
+            <Link to="/teach/sub2" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Teacher Tool 2</Link>
             
-            <Link to="/saas1" className="block py-2 nav-link">SaaS Tool 1</Link>
-            <Link to="/saas2" className="block py-2 nav-link">SaaS Tool 2</Link>
-            <Link to="/twilio" className="block py-2 nav-link">Twilio</Link>
-            <Link to="/twilioOptIn" className="block py-2 nav-link">Twilio Messaging Opt-In</Link>
-            <Link to="/profile/config" className="block py-2 nav-link">Profile and Configuration</Link>
-            <button onClick={handleLogout} className="w-full text-left py-2 nav-link">
+            <Link to="/saas1" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>SaaS Tool 1</Link>
+            <Link to="/saas2" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>AI Content Worksheets</Link>
+            <Link to="/twilio" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio</Link>
+            <Link to="/twilioOptIn" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio Messaging Opt-In</Link>
+            <Link to="/profile/config" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Profile and Configuration</Link>
+            <button onClick={() => { handleLogout(); handleSubMenuClick(); }} className="w-full text-left py-2 text-custom-yellow">
               Logout
             </button>
           </div>
         )}
       </div>
     </nav>
-  );
+  ); 
 };
 
 export default Navbar;

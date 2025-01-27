@@ -4,7 +4,7 @@ import { Twitter, Instagram } from 'lucide-react';
 const Footer = () => {
   return (
     <footer className="bg-gray-50 shadow-md mt-auto">
-      <div className="container-custom py-8">
+      <div className="container-custom py-8 px-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-[#264653] mb-4 md:mb-0">
             © 2024 idioma-ai. All rights reserved.

@@ -34,6 +34,8 @@ function Saas2() {
   const [topic, setTopic] = useState<string>('');
   const [language, setLanguage] = useState<string>(languages[0]);
   const [quiz, setQuiz] = useState<QuizQuestion[] | null>(null);
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
+  const [feedback, setFeedback] = useState<{ [key: number]: string }>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +44,7 @@ function Saas2() {
 
     const prompt = `Please provide a response in the following format:
 
-1. First, write a 150 word response of: ${topic} in ${language}. Below the 500 word response, provide the English Translation. Put total tokens used in the call to openai API above the story. Give details of token usage like tokens in request, response, and total.
+1. First, write a response of: ${topic} in ${language} and then provide the English translation.
 
 2. Then, write "VERBS:" on a new line, followed by a list of all ${language} verbs used in the summary. Format each verb on a new line like this:
 [${language} verb] - [English translation] - [conjugation description]
@@ -50,7 +52,9 @@ function Saas2() {
 3. Then, write "ADJECTIVES:" on a new line, followed by a list of all ${language} adjectives used in the summary. Format each adjective on a new line like this:
 [${language} adjective] - [English translation]
 
-Make sure to include ALL verbs and adjectives used in the summary, and ensure proper formatting with the dash separators.`;
+Make sure to include ALL verbs and adjectives used in the summary, and ensure proper formatting with the dash separators.
+
+4. Finally, provide the translation in a table format with the foreign language translation in the left-hand column and the English translation in the right-hand column.`;
 
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -60,9 +64,9 @@ Make sure to include ALL verbs and adjectives used in the summary, and ensure pr
           'Authorization': `Bearer ${openaiApiKey}`
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
+          model: "gpt-4-turbo",
           messages: [{ role: "system", content: prompt }],
-          max_tokens: 600,
+          max_tokens: 3000,
           temperature: 0.4
         })
       });
@@ -189,6 +193,15 @@ Correct Answer: [correct answer]`;
     }
   };
 
+  const handleAnswerSelect = (questionIndex: number, selectedOption: string) => {
+    setSelectedAnswers(prev => ({ ...prev, [questionIndex]: selectedOption }));
+    const isCorrect = quiz![questionIndex].correctAnswer === selectedOption;
+    setFeedback(prev => ({
+      ...prev,
+      [questionIndex]: isCorrect ? 'Correct' : `Incorrect. The correct answer is: ${quiz![questionIndex].correctAnswer}`
+    }));
+  };
+
   const handleDownloadDocx = () => {
     if (!response || !quiz) return;
 
@@ -200,7 +213,7 @@ Correct Answer: [correct answer]`;
             new Paragraph({
               children: [
                 new TextRun({
-                  text: "Generated Content",
+                  text: "Translated and English Content",
                   bold: true,
                   size: 32,
                 }),
@@ -286,127 +299,143 @@ Correct Answer: [correct answer]`;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8">Enter a topic (ex. some history, fictional story, crypto news, pokemon cards)</h1>
-          
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <input
-              type="text"
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder="Enter a topic"
-              className="w-full p-3 border border-gray-300 rounded-lg"
-            />
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg"
-            >
-              {languages.map((lang, index) => (
-                <option key={index} value={lang}>{lang}</option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                'Generating...'
-              ) : (
-                <>
-                  Generate Summary <Send className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </form>
-
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600">{error}</p>
-            </div>
+    <div className="bg-white p-6 rounded-lg shadow-md border border-custom-red">
+      <h1 className="text-xl font-bold text-custom-blue mb-8">This webpage uses Open AI to create text in a language you choose. Simply enter a topic in the textbox below and study the text, verbs, and adjectives (examples - ask about current events, ask for a fictional story, or ask for example sentences on a particular verb or grammar subject.)</h1>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <input
+          type="text"
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          placeholder="Enter a topic"
+          className="mt-4 p-2 border border-gray-300 rounded w-full"
+        />
+        <h1 className="text-xl font-bold text-custom-blue mb-8">Choose a language</h1>
+      
+        <select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+          className="mt-4 p-2 border border-gray-300 rounded w-full"
+        >
+          {languages.map((lang, index) => (
+            <option key={index} value={lang}>{lang}</option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-custom-blue text-white py-3 px-6 rounded-lg hover:bg-custom-red transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            'Generating...'
+          ) : (
+            <>
+              Generate Summary <Send className="w-4 h-4" />
+            </>
           )}
+        </button>
+      </form>
 
-          {response && (
+      {error && (
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600">{error}</p>
+        </div>
+      )}
+
+      {response && (
+        <div className="mt-8 space-y-8">
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold text-custom-blue mb-4">Generated Content</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-gray-700 leading-relaxed">
+                {response.text.split('\n\n')[0]}
+              </div>
+              <div className="text-gray-700 leading-relaxed">
+                {response.text.split('\n\n')[1]}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold text-custom-blue mb-4">Verb Analysis</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{language} Verb</th>
+                    <th className="px-6 py-3 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">English Translation</th>
+                    <th className="px-6 py-3 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conjugation</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {response.verbs.map((verb, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{verb.language}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{verb.english}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{verb.conjugation}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold text-custom-blue mb-4">Adjective Analysis</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {response.adjectives.map((adj, index) => (
+                <div key={index} className="flex justify-between p-3 bg-white rounded shadow-sm">
+                  <span className="font-medium text-custom-blue">{adj.language}</span>
+                  <span className="text-gray-600">{adj.english}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handleCreateQuiz}
+            className="w-full bg-custom-blue text-white py-3 px-6 rounded-lg hover:bg-custom-red transition-colors flex items-center justify-center gap-2"
+          >
+            Create Quiz
+          </button>
+
+          {quiz && (
             <div className="mt-8 space-y-8">
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Generated Content</h2>
-                <p className="text-gray-700 leading-relaxed">{response.text}</p>
-              </div>
-
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Verb Analysis</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr>
-                        <th className="px-6 py-3 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{language} Verb</th>
-                        <th className="px-6 py-3 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">English Translation</th>
-                        <th className="px-6 py-3 bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conjugation</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {response.verbs.map((verb, index) => (
-                        <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{verb.language}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{verb.english}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{verb.conjugation}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <h2 className="text-xl font-semibold text-custom-blue mb-4">Quiz</h2>
+              {quiz.map((question, index) => (
+                <div key={index} className="bg-gray-50 p-6 rounded-lg">
+                  <p className="text-gray-700 mb-4">{question.question}</p>
+                  <ul className="space-y-2">
+                    {question.options.map((option, idx) => (
+                      <li key={idx} className="flex items-center">
+                        <input
+                          type="radio"
+                          name={`question-${index}`}
+                          id={`question-${index}-option-${idx}`}
+                          className="mr-2"
+                          onChange={() => handleAnswerSelect(index, option)}
+                        />
+                        <label htmlFor={`question-${index}-option-${idx}`} className="text-gray-700">{option}</label>
+                      </li>
+                    ))}
+                  </ul>
+                  {feedback[index] && (
+                    <p className={`mt-2 ${feedback[index].startsWith('Correct') ? 'text-green-600' : 'text-red-600'}`}>
+                      {feedback[index]}
+                    </p>
+                  )}
                 </div>
-              </div>
-
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Adjective Analysis</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  {response.adjectives.map((adj, index) => (
-                    <div key={index} className="flex justify-between p-3 bg-white rounded shadow-sm">
-                      <span className="font-medium text-indigo-600">{adj.language}</span>
-                      <span className="text-gray-600">{adj.english}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
+              ))}
               <button
-                onClick={handleCreateQuiz}
-                className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                onClick={handleDownloadDocx}
+                className="w-full bg-custom-blue text-white py-3 px-6 rounded-lg hover:bg-custom-red transition-colors flex items-center justify-center gap-2"
               >
-                Create Quiz
+                Download as DOCX
               </button>
-
-              {quiz && (
-                <div className="mt-8 space-y-8">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-4">Quiz</h2>
-                  {quiz.map((question, index) => (
-                    <div key={index} className="bg-gray-50 p-6 rounded-lg">
-                      <p className="text-gray-700 mb-4">{question.question}</p>
-                      <ul className="space-y-2">
-                        {question.options.map((option, idx) => (
-                          <li key={idx} className="flex items-center">
-                            <input type="radio" name={`question-${index}`} id={`question-${index}-option-${idx}`} className="mr-2" />
-                            <label htmlFor={`question-${index}-option-${idx}`} className="text-gray-700">{option}</label>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                  <button
-                    onClick={handleDownloadDocx}
-                    className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                  >
-                    Download as DOCX
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
