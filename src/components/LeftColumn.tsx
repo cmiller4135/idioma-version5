@@ -4,11 +4,17 @@ import { Lightbulb } from 'lucide-react';
 
 const LeftColumn = () => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-
+    <div className="bg-white p-6 rounded-lg shadow-md hidden md:block">
       <h2 className="text-xl font-bold mb-4 text-[#264653]">Language Learning Journey</h2>
       
-
+      <div className="mb-4">
+        <Link to="/tools/sub1" className="text-custom-blue hover:text-custom-red underline mr-4">
+          Spanish Verb Conjugator
+        </Link>
+        <Link to="/saas2" className="text-custom-blue hover:text-custom-red underline">
+          Study a Language with AI
+        </Link>
+      </div>
 
       <blockquote className="border-l-4 border-[#E63946] pl-4 mb-6 italic">
         "Language is the road map of a culture. It tells you where its people come from and where they are going."
