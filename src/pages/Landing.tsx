@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -56,8 +57,20 @@ const Landing = () => {
       <div className="flex-1 container-custom py-12">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div className="text-center md:text-left bg-gradient-to-r from-[#264653] to-[#E63946] p-8 rounded-lg text-white">
-            <h1 className="text-4xl font-bold mb-6">Welcome to Idioma-AI</h1>
-            <p className="text-lg mb-6">
+          <div className="mb-4">
+        <h1 className="text-4xl font-bold mb-6">For a limited time, try these learning tools for free!</h1>
+        <Link to="/teach/sub1" className="text-2xl hover:text-custom-red underline mr-4 ">
+          Photo Translator
+        </Link>
+        <br></br>
+        <Link to="/saas2" className="text-2xl hover:text-custom-red underline">
+          Study a Language with AI
+        </Link>
+        <br></br>
+        <br></br>
+      </div>
+            <h1 className="text-3xl font-bold mb-4">Welcome to Idioma-AI</h1>
+            <p className="text-lg mb-3">
               Transform your language learning journey with AI-powered tools and personalized lessons.
             </p>
             <div className="space-y-4">
