@@ -116,7 +116,7 @@ function TeachSub1() {
             ],
           },
         ],
-        max_tokens: 500,
+        max_tokens: 4000,
       });
 
       const translationContent = translationResponse.choices[0]?.message?.content || 'No text detected or unable to translate.';
@@ -160,7 +160,7 @@ function TeachSub1() {
           {
             role: "user",
             content: [
-              { type: "text", text: "Find all verbs in the text and create an HTML table with 3 columns: 1. The actual verb as it appears in the text 2. The translation of the verb 3. A brief description in English of the conjugation (e.g., 'Present tense, third person singular'). Format the response as an HTML table with appropriate headers." },
+              { type: "text", text: "Find all translated verbs in the text and put each 'foreign language verb - original verb - conjugation with tense' on a line then go to a new line in the container so that each verb is on a single line in the response)" },
               {
                 type: "image_url",
                 image_url: {
@@ -170,7 +170,7 @@ function TeachSub1() {
             ],
           },
         ],
-        max_tokens: 1000,
+        max_tokens: 3000,
       });
 
       const verbContent = verbResponse.choices[0]?.message?.content || 'No verbs found.';
@@ -201,7 +201,7 @@ function TeachSub1() {
           {
             role: "user",
             content: [
-              { type: "text", text: "Find all adjectives in the text and create an HTML table with 2 columns: 1. The translated adjective 2. The original language adjective. Format the response as an HTML table with appropriate headers." },
+              { type: "text", text: "Find all adjectives in the text and put each adjective - Translated adjective on a line then go to a new line in the container so that each adjective is on a single line in the response)" },
               {
                 type: "image_url",
                 image_url: {
@@ -211,7 +211,7 @@ function TeachSub1() {
             ],
           },
         ],
-        max_tokens: 1000,
+        max_tokens: 3000,
       });
 
       const adjectiveContent = adjectiveResponse.choices[0]?.message?.content || 'No adjectives found.';
@@ -232,7 +232,8 @@ function TeachSub1() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] bg-gray-800">
+    <div className="flex flex-col h-[calc(150vh-64px)] bg-gray-800 text-white">
+      <h1>Work area...</h1>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
           <div
@@ -363,9 +364,14 @@ function TeachSub1() {
                   <div className="flex-1 flex gap-2">
                     <button
                       onClick={handleTranslateImage}
-                      className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                      disabled={isLoading}
+                      className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                        isLoading 
+                          ? 'bg-gray-400 cursor-not-allowed' 
+                          : 'bg-green-500 hover:bg-green-600'
+                      }`}
                     >
-                      Translate Text
+                      {isLoading ? 'Translating...' : 'Translate Text'}
                     </button>
                     
                     <select
