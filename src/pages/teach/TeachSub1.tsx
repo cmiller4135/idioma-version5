@@ -127,7 +127,7 @@ function TeachSub1() {
       const englishMatch = translationContent.match(/ENGLISH:\s*(.*)/s);
 
       const translatedText = translatedMatch ? translatedMatch[1].trim() : 'Translation not available';
-      const englishText = englishMatch ? englishMatch[1].trim() : 'Original text not available';
+      const englishText = englishMatch ? englishMatch[1].trim() : 'Original text not available'; 
 
       const formattedResponse = `${targetLanguage} Translation:\n${translatedText}\n\n\nEnglish Text:\n${englishText}`;
       
@@ -234,6 +234,92 @@ function TeachSub1() {
   return (
     <div className="flex flex-col h-[calc(150vh-64px)] bg-gray-800 text-white">
       <h1>Work area...</h1>
+      <div className="p-4 border-b border-gray-700">
+        <div className="max-w-md mx-auto space-y-6">
+          <div className="bg-gray-700 rounded-lg shadow-md p-6">
+            {!photo ? (
+              <div className="space-y-4">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  className="w-full h-[300px] rounded-lg bg-black object-cover"
+                />
+                
+                <div className="flex justify-center gap-4">
+                  <button
+                    onClick={startCamera}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                  >
+                    <Camera size={20} />
+                    Start Camera
+                  </button>
+                  
+                  <button
+                    onClick={takePhoto}
+                    disabled={!isStreamReady}
+                    className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                      isStreamReady 
+                        ? 'bg-green-500 hover:bg-green-600' 
+                        : 'bg-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    Take Photo
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="w-full h-[100px] rounded-lg overflow-hidden bg-black">
+                  <img 
+                    src={photo} 
+                    alt="Captured photo" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => {
+                      setPhoto(null);
+                      startCamera();
+                    }}
+                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    Take Another Photo
+                  </button>
+                  
+                  <div className="flex-1 flex gap-2">
+                    <button
+                      onClick={handleTranslateImage}
+                      disabled={isLoading}
+                      className={`text-white rounded-lg transition-colors ${
+                        isLoading 
+                          ? 'bg-gray-400 cursor-not-allowed' 
+                          : 'bg-green-500 hover:bg-green-600'
+                      }`}
+                    >
+                      {isLoading ? 'Translating...' : 'Translate Text'}
+                    </button>
+                    
+                    <select
+                      value={translationType}
+                      onChange={(e) => setTranslationType(e.target.value as TranslationType)}
+                      className="flex-1 bg-gray-600 text-white rounded-lg px-2 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      <option>Translate from English to Spanish</option>
+                      <option>Translate from Spanish to English</option>
+                      <option>Translate from English to Japanese</option>
+                      <option>Translate from English to French</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
           <div
@@ -304,92 +390,6 @@ function TeachSub1() {
           </div>
         )}
         <div ref={messagesEndRef} />
-      </div>
-
-      <div className="p-4 border-t border-gray-700">
-        <div className="max-w-md mx-auto space-y-6">
-          <div className="bg-gray-700 rounded-lg shadow-md p-6">
-            {!photo ? (
-              <div className="space-y-4">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  className="w-full h-[300px] rounded-lg bg-black object-cover"
-                />
-                
-                <div className="flex justify-center gap-4">
-                  <button
-                    onClick={startCamera}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
-                  >
-                    <Camera size={20} />
-                    Start Camera
-                  </button>
-                  
-                  <button
-                    onClick={takePhoto}
-                    disabled={!isStreamReady}
-                    className={`px-4 py-2 text-white rounded-lg transition-colors ${
-                      isStreamReady 
-                        ? 'bg-green-500 hover:bg-green-600' 
-                        : 'bg-gray-400 cursor-not-allowed'
-                    }`}
-                  >
-                    Take Photo
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="w-full h-[100px] rounded-lg overflow-hidden bg-black">
-                  <img 
-                    src={photo} 
-                    alt="Captured photo" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => {
-                      setPhoto(null);
-                      startCamera();
-                    }}
-                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                  >
-                    Take Another Photo
-                  </button>
-                  
-                  <div className="flex-1 flex gap-2">
-                    <button
-                      onClick={handleTranslateImage}
-                      disabled={isLoading}
-                      className={`px-4 py-2 text-white rounded-lg transition-colors ${
-                        isLoading 
-                          ? 'bg-gray-400 cursor-not-allowed' 
-                          : 'bg-green-500 hover:bg-green-600'
-                      }`}
-                    >
-                      {isLoading ? 'Translating...' : 'Translate Text'}
-                    </button>
-                    
-                    <select
-                      value={translationType}
-                      onChange={(e) => setTranslationType(e.target.value as TranslationType)}
-                      className="flex-1 bg-gray-600 text-white rounded-lg px-2 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
-                    >
-                      <option>Translate from English to Spanish</option>
-                      <option>Translate from Spanish to English</option>
-                      <option>Translate from English to Japanese</option>
-                      <option>Translate from English to French</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );
